@@ -1,0 +1,24 @@
+declare
+    limit_sup hr.employees.employee_id%type default 100;
+    limit_inf hr.employees.employee_id%type default 120;
+    
+    
+    comment_   varchar(100);
+    cursor cc is ( 
+                    select * from hr.employees 
+                    where employee_id between limit_sup and limit_inf 
+                  );
+begin
+    for var in cc LOOP
+        
+        if(var.salary > 10000) 
+            then comment_ := 'El salario actual del empleado '||  var.employee_id || ' es de ' || var.salary || '. Es un excelente salario'; 
+        elsif(var.salary >= 9000 and var.salary <= 10000) 
+            then comment_ := 'El salario actual del empleado '||  var.employee_id || ' es de ' || var.salary || '. Es un salario normal'; 
+        elsif(var.salary < 9000)
+            then comment_ := 'El salario actual del empleado '||  var.employee_id || ' es de ' || var.salary || '. Le deben aumentar el salario';
+        end if;
+        
+        dbms_output.put_line(comment_);
+    end LOOP;
+end;
