@@ -11,9 +11,6 @@ create table CALCULO_REMUN (
     primary key(id_empleado)
 );
 
-select * from CALCULO_REMUN; 
-truncate table CALCULO_REMUN;
-select * from hr.employees;
 declare
     cursor cc is ( select * from hr.employees );
 begin
