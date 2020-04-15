@@ -14,21 +14,25 @@ create table CALCULO_REMUN (
 select * from CALCULO_REMUN; 
 truncate table CALCULO_REMUN;
 select * from hr.employees;
-
 declare
     cursor cc is ( select * from hr.employees );
 begin
     for var in cc LOOP
         insert into CALCULO_REMUN values (
-                                               var.employee_id, 
-                                               var.salary, 
-                                               var.salary * nvl(var.commission_pct, 0),
-                                               var.salary * 5.5 / 100, 
-                                               var.salary * 17.8 / 100,
-                                               var.salary * 7.8 / 100,
-                                               var.salary * 6.5 / 100, 
-                                               var.salary * nvl(var.commission_pct, 0) + var.salary * 5.5 / 100 + var.salary * 17.8 / 100 + var.salary * 6.5 / 100, 
-                                               sysdate
-                                          );
+                                           var.employee_id, 
+                                           var.salary, 
+                                           var.salary * nvl(var.commission_pct, 0),
+                                            var.salary * 5.5 / 100, 
+                                            var.salary * 17.8 / 100,
+                                            var.salary * 7.8 / 100,
+                                            var.salary * 6.5 / 100, 
+                                            var.salary * 6.5 / 100 + 
+                                            var.salary * 6.5 / 100 + 
+                                            var.salary * 17.8 / 100 + 
+                                            var.salary * 5.5 / 100 + 
+                                            var.salary * 17.8 / 100 + 
+                                            var.salary * nvl(var.commission_pct, 0),
+                                            sysdate 
+                                           );
     end LOOP;
 end;
