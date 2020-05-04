@@ -1,12 +1,11 @@
-
 declare
     cursor cc is ( select * from profesional );
     rutProfesional    profesional.rutprof%type;
     sueldoBase        profesional.sueldo_base%type;
     cantidadAsesorias number(2);
     
-    toPorcentaje      porc_asesorias.porc_bonif_ase%type;
-    toProfesion       profesion.asignacion%type;
+    toPorcentaje      porc_asesorias.porc_bonif_ase%type;                   -- Porcentaje de asesorías
+    toProfesion       profesion.asignacion%type;                            -- Porcentaje por profesión
 begin
     for item in cc LOOP
         select
@@ -36,14 +35,21 @@ begin
         from profesion
         where idprofesion = item.idprofesion;
         
-        
-        
-        dbms_output.put_line(
-                                rutProfesional || ' ' || 
-                                cantidadAsesorias || ' ' || 
-                                sueldoBase || ' ' || 
-                                sueldoBase * toPorcentaje / 100 || ' ' || 
-                                sueldoBase * toProfesion / 100
-                            );
+        INSERT INTO REMUNERACION_MENSUAL
+            values (
+                        item.rutprof,
+                        4,
+                        2020,
+                        item.sueldo_base,
+                        24000,
+                        item.sueldo_base * toPorcentaje / 100,
+                        55000,
+                        44000,
+                        item.sueldo_base * toProfesion / 100,
+                        0,
+                        0,
+                        0,
+                        0
+                   );
     end LOOP;
 end;
