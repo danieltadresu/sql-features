@@ -1,0 +1,49 @@
+
+declare
+    cursor cc is ( select * from profesional );
+    rutProfesional    profesional.rutprof%type;
+    sueldoBase        profesional.sueldo_base%type;
+    cantidadAsesorias number(2);
+    
+    toPorcentaje      porc_asesorias.porc_bonif_ase%type;
+    toProfesion       profesion.asignacion%type;
+begin
+    for item in cc LOOP
+        select
+            p.rutprof           as rutProfesional,
+            count(a.rutprof)    as cantidadPr,
+            p.sueldo_base       as sueldoBase
+         INTO rutProfesional, cantidadAsesorias, sueldoBase
+        from profesional p
+        join asesoria a
+        on p.rutprof = a.rutprof
+        where 
+                p.rutprof = item.rutprof and
+                extract(month from sysdate)-1 = extract(month from a.inicio)
+              
+        group by p.rutprof, p.sueldo_base;
+        
+        
+        select
+            porc_bonif_ase
+         INTO toPorcentaje
+        from porc_asesorias 
+        where cantidadAsesorias between cant_inf and cant_sup;
+        
+        select
+            asignacion
+         INTO toProfesion
+        from profesion
+        where idprofesion = item.idprofesion;
+        
+        
+        
+        dbms_output.put_line(
+                                rutProfesional || ' ' || 
+                                cantidadAsesorias || ' ' || 
+                                sueldoBase || ' ' || 
+                                sueldoBase * toPorcentaje / 100 || ' ' || 
+                                sueldoBase * toProfesion / 100
+                            );
+    end LOOP;
+end;
