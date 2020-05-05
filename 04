@@ -1,0 +1,37 @@
+select * from asesoria;
+
+declare
+    cursor cc is ( 
+                    select distinct
+                        a.rutprof,
+                        count(a.rutprof),
+                        sum(s.incentivo_sector)
+                    from asesoria a
+                    join empresa e 
+                    on a.idempresa = e.idempresa
+                    join sector s
+                    on e.codsector = s.codsector
+                    where extract(month from sysdate)-1 = extract(month from a.inicio)
+                    group by a.rutprof;
+                 );
+begin
+    
+end;
+
+select
+            p.rutprof           as rutProfesional,
+            count(a.rutprof)    as cantidadPr,
+            p.sueldo_base       as sueldoBase,
+            sum(s.incentivo_sector)
+        from profesional p
+        join asesoria a
+        on p.rutprof = a.rutprof
+        join empresa e
+        on a.idempresa = e.idempresa
+        join sector s
+        on e.codsector = s.codsector
+        where 
+                p.rutprof = '60579696' and
+                extract(month from sysdate)-1 = extract(month from a.inicio)
+              
+        group by p.rutprof, p.sueldo_base;
