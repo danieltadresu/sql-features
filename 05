@@ -1,0 +1,39 @@
+select * from profesional;
+
+declare
+
+    cursor cc is ( select * from profesional );
+    
+    bono_imagen constant number(10) default 24.000;
+    
+begin
+    for item in cc LOOP
+    
+        select distinct 
+            p.rutprof                                           as rut_profesinal,
+            /*4                                                   as mes_asesoria,
+            2020                                                as ano_asesoria,
+            p.sueldo_base                                       as sueldo_profesional,*/
+            bono_imagen                                         as bono_imagen/*,
+            count(a.rutprof)                                    as bono_asesorias,
+            55000                                               as bono_colacion,
+            44000                                               as bono_movilizacion,
+            p.sueldo_base * pp.asignacion / 100                 as bono_profesion,
+            sum(s.incentivo_sector) * p.sueldo_base / 100       as bono_incentivo*/
+        from profesional p
+        join asesoria a 
+        on p.rutprof = a.rutprof
+        join profesion pp
+        on p.idprofesion = pp.idprofesion
+        join empresa e
+        on a.idempresa = e.idempresa
+        join sector s
+        on e.codsector = s.codsector
+        where p.rutprof = '60579696' and
+              extract(month from sysdate)-1 = extract(month from a.inicio)
+        group by p.rutprof, p.sueldo_base, pp.asignacion;
+        
+        DBMS_OUTPUT.put_line(item.rut_profesional || ' ' || item.bono_imagen);
+        
+    end LOOP;
+end;
