@@ -1,25 +1,35 @@
-select * from profesional;
-
 declare
 
     cursor cc is ( select * from profesional );
     
-    bono_imagen constant number(10) default 24.000;
+    bono_imagen         constant number(10) default 24.000;
+    mes                 constant number(10) default 04;
+    ano                 constant number(10) default 2020;
+    bono_colacion       constant number(10) default 55000;
+    bono_moviizacion    constant number(10) default 44000;
     
+    rut                 profesional.rutprof%type;
+    sueldo_base         profesional.sueldo_base%type;
+    cant_asesorias      number(10);
+    bono_profesion      number(10);
+    incentivo           number(10);
 begin
     for item in cc LOOP
     
         select distinct 
             p.rutprof                                           as rut_profesinal,
-            /*4                                                   as mes_asesoria,
-            2020                                                as ano_asesoria,
-            p.sueldo_base                                       as sueldo_profesional,*/
-            bono_imagen                                         as bono_imagen/*,
+            mes                                                  as mes_asesoria,
+            ano                                                as ano_asesoria,
+            p.sueldo_base                                       as sueldo_profesional,
+            bono_imagen                                         as bono_imagen,
             count(a.rutprof)                                    as bono_asesorias,
-            55000                                               as bono_colacion,
-            44000                                               as bono_movilizacion,
+            bono_colacion                                               as bono_colacion,
+            bono_moviizacion                                               as bono_movilizacion,
             p.sueldo_base * pp.asignacion / 100                 as bono_profesion,
-            sum(s.incentivo_sector) * p.sueldo_base / 100       as bono_incentivo*/
+            sum(s.incentivo_sector) * p.sueldo_base / 100       as bono_incentivo
+            
+                INTO rut, sueldo_base, cant_asesorias, bono_profesion, incentivo
+            
         from profesional p
         join asesoria a 
         on p.rutprof = a.rutprof
