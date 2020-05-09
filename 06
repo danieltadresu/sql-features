@@ -1,0 +1,27 @@
+--WHILE
+declare
+    cursor cc is ( select * from hr.employees );
+    aux cc%rowtype;                                 -- Toma 1 FILA completa de la tabla 
+begin 
+    open cc;
+    fetch cc into aux;
+        while(cc%found) LOOP
+            DBMS_OUTPUT.PUT_LINE(rpad(aux.employee_id, 5) || aux.first_name || ' ' || aux.last_name);
+                fetch cc into aux;
+        end LOOP;
+end;
+
+--FETCH
+
+
+declare
+    cursor cc is ( select * from hr.employees );
+    aux cc%rowtype;
+begin
+    open cc;
+    LOOP 
+        fetch cc INTO aux;
+            dbms_output.put_line(rpad(aux.employee_id, 5) || aux.first_name || ' ' || aux.last_name);
+        exit when cc%notfound;
+    end loop;
+end;
