@@ -1,0 +1,86 @@
+declare
+    counter             number(10) := 1;
+    bono_colacion       constant number(10) default 55000;
+    mes_remuneracion    remuneracion_mensual.mes_remuneracion%type default 04;
+    ano_remuneracion    remuneracion_mensual.anno_remuneracion%type default 2020;
+    bono_movilizcion    remuneracion_mensual.bono_movilizacion%type default 44000;
+    bono_imagen         remuneracion_mensual.bono_imagen%type default 24000;
+    rut_profesional       profesional.rutprof%type;
+    sueldo_base           profesional.sueldo_base%type;
+    idprofesion           profesion.idprofesion%type;
+    cantidad_asesorias    number(10);
+    porcentaje_asesorias  number(10);
+    porcentaje_profesion  number(10);
+    porcentaje_sector     number(10);
+    porcentaje_afp        number(10);
+    porcentaje_isapre     number(10);
+    
+    aux                   number(10);
+    liquido               number(10);
+begin
+    while(counter <= 15) LOOP
+    
+        select
+            p.rutprof,
+            p.sueldo_base,
+            count(a.rutprof),
+            sum(s.incentivo_sector) * p.sueldo_base / 100 INTO rut_profesional, sueldo_base, cantidad_asesorias, porcentaje_sector
+        from profesional p
+        join asesoria a 
+        on p.rutprof = a.rutprof
+        join empresa e 
+        on a.idempresa = e.idempresa
+        join sector s
+        on e.codsector = s.codsector 
+        where p.idprofesional = counter and mes_remuneracion = extract(month from a.inicio)
+        group by p.rutprof, p.idprofesional, p.sueldo_base;
+        
+        select 
+            porc_bonif_ase * sueldo_base / 100 INTO porcentaje_asesorias
+        from porc_asesorias
+        where cantidad_asesorias >= cant_inf and cantidad_asesorias <= cant_sup;
+        
+        select
+            pp.asignacion * p.sueldo_base / 100 INTO porcentaje_profesion
+        from profesional p
+        join profesion pp
+        on p.idprofesion = pp.idprofesion
+        where p.idprofesional = counter;
+        
+        select
+            round(((sueldo_base + bono_imagen + porcentaje_asesorias + porcentaje_profesion + porcentaje_sector) * porc) / 100) into porcentaje_afp
+        from profesional p
+        join afp a
+        on p.idafp = a.idafp
+        where p.idprofesional = counter;
+        
+        select
+            round(((sueldo_base + bono_imagen + porcentaje_asesorias + porcentaje_profesion + porcentaje_sector) * 7) / 100) into porcentaje_isapre
+        from profesional p
+        join isapre i
+        on p.idisapre = i.idisapre
+        where p.idprofesional = counter;
+        
+        
+        aux := porcentaje_afp + porcentaje_isapre;
+        liquido := (sueldo_base + bono_colacion + porcentaje_asesorias + bono_colacion + porcentaje_profesion + porcentaje_sector + bono_movilizcion) - aux;
+        
+        INSERT INTO REMUNERACION_MENSUAL values
+        (
+            rut_profesional, 
+            mes_remuneracion, 
+            ano_remuneracion, 
+            sueldo_base,
+            bono_imagen,
+            porcentaje_asesorias, 
+            bono_colacion,
+            bono_movilizcion,
+            porcentaje_profesion, 
+            porcentaje_sector, 
+            porcentaje_afp, 
+            porcentaje_isapre, 
+            liquido
+        );
+        counter := counter + 1;
+    end LOOP;
+end;
