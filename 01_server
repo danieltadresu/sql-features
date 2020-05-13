@@ -1,0 +1,47 @@
+/**
+ * Lenguaje de Definición de Datos (DDL).
+ * Creating tables and altering them through DDL ALTER TABLE ADD.
+ */ 
+
+CREATE TABLE Cliente (
+	cli_id			 numeric(5)  not null,
+	cli_nombre		 varchar(25) not null,
+	cli_renta_anual  numeric(10) not null
+);
+
+ALTER TABLE Cliente
+ADD CONSTRAINT pk_cliente PRIMARY KEY(cli_id);
+
+CREATE TABLE Embarque (
+	emb_id			varchar(5)   not null,
+	emb_id_cli		numeric(5)  not null,
+	emb_peso		numeric(5,5) not null,
+	emb_id_camion   varchar(5)   not null,
+	emb_destino		varchar(25)  not null
+);
+
+ALTER TABLE Embarque
+ADD CONSTRAINT pk_embarque PRIMARY KEY(emb_id);
+
+ALTER TABLE Embarque
+ADD CONSTRAINT fk_cli_embarque FOREIGN KEY(emb_id_cli)
+REFERENCES Cliente(cli_id);
+
+
+CREATE TABLE Camion (
+	cam_id				varchar(5)   not null,
+	cam_nombre_chofer   varchar(25)  not null
+);
+
+ALTER TABLE Camion 
+ADD CONSTRAINT pk_camion PRIMARY KEY(cam_id);
+
+ALTER TABLE Embarque
+ADD CONSTRAINT fk_cam_embarque FOREIGN KEY(emb_id_camion)
+REFERENCES Camion(cam_id)
+
+CREATE TABLE Ciudad (
+	ciu_nombre		varchar(5) not null,
+	ciu_poblacion	integer not null
+);
+
