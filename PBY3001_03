@@ -49,3 +49,17 @@
     INSERT INTO SUBSIDIO (ID_SUBSIDIO) VALUES (504);
     INSERT INTO SUBSIDIO (ID_SUBSIDIO) VALUES (505);
 --end DML for SUBSIDIO
+
+
+
+
+--DML for POSTULANTE
+    INSERT INTO POSTULANTE 
+    (run_postulante, dv_run, sueldo_liquido, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, fecha_nacimiento, telefono_trabajo, telefono_movil, email, id_estado_civil, id_comuna, id_acreditacion, id_subsidio, id_profesion)
+    VALUES (20158799, '9', 1300000, 'DANIEL', 'SIMON', 'PIZARRO', 'TADRES', TO_DATE('31031999'), 73838932, 930290330, 'DPIZARRO@GMAIL.COM', 1, 201, 111, 501, 101);
+    
+    INSERT INTO POSTULANTE 
+    (run_postulante, dv_run, sueldo_liquido, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, fecha_nacimiento, telefono_trabajo, telefono_movil, email, id_estado_civil, id_comuna, id_acreditacion, id_subsidio, id_profesion)
+    VALUES (15980765, '7', 1300000, 'PEDRO', 'IGNACIO', 'BELLORA', 'BELLORA', TO_DATE('27041996'), 39848393, 225558055, 'PBELLORA@GMAIL.COM', 2, 202, 112, 501, 102);
+--end DML for POSTULANTE
+
