@@ -1,7 +1,7 @@
 --DDL for POSTULANTE
     create table POSTULANTE (
         RUN_POSTULANTE     NUMBER(9)    NOT NULL,
-        DV_RUN             VARCHAR2(1)  NOT NULL,
+        DV_RUN             VARCHAR2(1)  NULL,
         IMAGEN_POSTULANTE  BLOB         NOT NULL,   
         SUELDO_LIQUIDO     NUMBER(9)    NOT NULL,
         PRIMER_NOMBRE      VARCHAR2(45) NOT NULL,
