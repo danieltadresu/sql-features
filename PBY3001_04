@@ -8,7 +8,6 @@
 
 --1.2
 
-
 select
 p.run_postulante as run_postulante,
 extract(year from sysdate) - extract(year from p.fecha_nacimiento)  as edad,
@@ -16,3 +15,11 @@ ptj_edad.puntaje
 from postulante p
 join puntaje_edad ptj_edad
 on extract(year from sysdate) - extract(year from p.fecha_nacimiento) between ptj_edad.tramo_inf and ptj_edad.tramo_sup;
+
+select
+p.run_postulante,
+count(c.run_carga)
+from postulante p
+join carga_familiar c
+on p.run_postulante = c.run_postulante
+group by p.run_postulante;
