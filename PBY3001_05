@@ -1,0 +1,31 @@
+set serveroutput on;
+declare
+    cursor datos is ( select * from POSTULANTE );
+    edad        number(2);
+    ptje_edad   puntaje_postulante.puntaje_edad%type;
+    cant_cargas number(2);
+    ptje_cargas puntaje_carga_familiar.puntaje%type;
+begin
+    for i in datos LOOP
+      select
+       ptj_edad.puntaje,
+       extract(year from sysdate) - extract(year from p.fecha_nacimiento) as edad
+       INTO ptje_edad, edad
+      from postulante p
+       join puntaje_edad ptj_edad
+       on extract(year from sysdate) - extract(year from p.fecha_nacimiento) between ptj_edad.tramo_inf and ptj_edad.tramo_sup
+       where p.run_postulante = i.run_postulante;
+      
+      select
+       count(c.run_carga)
+       INTO cant_cargas
+       from postulante p
+      join carga_familiar c
+       on p.run_postulante = c.run_postulante
+       where p.run_postulante = i.run_postulante
+       group by p.run_postulante;
+       
+
+      DBMS_OUTPUT.PUT_LINE( i.run_postulante  || ' ' || edad || ' ' || ptje_edad || ' ' || cant_cargas || ' ' || ptje_cargas);
+    end LOOP;
+end;
