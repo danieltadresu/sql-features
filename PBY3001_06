@@ -1,0 +1,36 @@
+set serveroutput on;
+declare
+    cursor datos_cursor is ( select * from POSTULANTE );
+    edad_postulante   number(2);
+    ptje_edad         number(3);
+    cantidad_cargas   number(2);
+    ptje_cargas       number(3);
+begin
+    for i in datos_cursor LOOP
+        
+        select
+            extract(year from sysdate) - extract(year from fecha_nacimiento) into edad_postulante
+        from POSTULANTE
+        where run_postulante = i.RUN_POSTULANTE;
+        
+        select
+            puntaje INTO ptje_edad
+        from PUNTAJE_EDAD
+        where edad_postulante between TRAMO_INF and TRAMO_SUP;
+        
+        begin
+            select
+                count(run_carga) into cantidad_cargas
+            from CARGA_FAMILIAR
+            where run_postulante = i.run_postulante
+            group by run_postulante;
+            
+            EXCEPTION
+            when NO_DATA_FOUND then
+                cantidad_cargas := 0;
+        end;
+        
+        
+        DBMS_OUTPUT.PUT_LINE(rpad(i.RUN_POSTULANTE, 10, ' ') || rpad(edad_postulante, 10, ' ') || ptje_edad || ' ' || cantidad_cargas);
+    end LOOP;
+end;
