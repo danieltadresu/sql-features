@@ -54,7 +54,7 @@
 --DML for POSTULANTE
     INSERT INTO POSTULANTE 
     (run_postulante, dv_run, sueldo_liquido, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, fecha_nacimiento, telefono_trabajo, telefono_movil, email, id_estado_civil, id_comuna, id_acreditacion, id_subsidio, id_profesion)
-    VALUES (15980765, '7', 1300000, 'PEDRO', 'IGNACIO', 'BELLORA', 'BELLORA', TO_DATE('27041976'), 39848393, 225558055, 'PBELLORA@GMAIL.COM', 2, 202, 112, 501, 101);
+    VALUES (15980765, '7', 1300000, 'PEDRO', 'IGNACIO', 'BELLORA', 'BELLORA', TO_DATE('27041976'), 39848393, 225558055, 'PBELLORA@GMAIL.COM', 2, 202, 111, 501, 101);
 --end DML for POSTULANTE
 
 --DML for PUNTAJE_EDAD
