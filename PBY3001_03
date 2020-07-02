@@ -68,7 +68,7 @@
 
     INSERT INTO POSTULANTE
     (run_postulante, dv_run, sueldo_liquido, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, fecha_nacimiento, telefono_trabajo, telefono_movil, email, id_estado_civil, id_comuna, id_acreditacion, id_subsidio, id_profesion)
-    VALUES (18709562, 'K', 1300000, 'LUIS', 'BENJAMIN', 'PEREZ', 'OYARZUN', TO_DATE('27041992'), 39848393, 225558055, 'BPEREZ@GMAIL.COM', 2, 202, 111, 501, 103);
+    VALUES (18709562, 'K', 1300000, 'LUIS', 'BENJAMIN', 'PEREZ', 'OYARZUN', TO_DATE('27041992'), 39848393, 225558055, 'BPEREZ@GMAIL.COM', 2, 202, 111, 502, 103);
     
     
 --end DML for POSTULANTE
