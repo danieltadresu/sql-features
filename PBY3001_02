@@ -268,8 +268,7 @@
 -- DDL for TIPO_VIVIENDA
     CREATE TABLE TIPO_VIVIENDA (
         ID_TIPO_VIVIENDA    NUMBER(3)   NOT NULL,
-        NRO_PISOS           NUMBER(2)   NOT NULL,
-        ID_SUBSIDIO          NUMBER(3) NOT NULL
+        NRO_PISOS           NUMBER(2)   NOT NULL
     );
     
     
