@@ -11,6 +11,10 @@ declare
     ptje_indigena     number(3);
     monto_ahorro      cuenta_ahorro.monto_ahorrado%type;
     ptje_monto_ahorro number(3);
+    profesion         varchar2(60);
+    ptje_nivel_ed     number(3);
+    ptje_total        number(10);
+    
 begin
     for i in datos_cursor LOOP
         
@@ -76,9 +80,20 @@ begin
                 ptje_monto_ahorro := 0;
         end;
         
+        select
+            p.nombre_profesion,
+            nvl.puntaje 
+            into profesion, ptje_nivel_ed
+        from PROFESION p
+        join NIVEL_EDUCACIONAL nvl
+        on p.id_nivel_ed = nvl.id_nivel_ed
+        where p.id_profesion = i.ID_PROFESION;
+        
+        ptje_total := (ptje_edad + ptje_cargas + ptje_est_civil + ptje_indigena + ptje_monto_ahorro + ptje_nivel_ed);
+        
         DBMS_OUTPUT.PUT_LINE(
         rpad(i.RUN_POSTULANTE, 10, ' ') || rpad(edad_postulante, 10, ' ') || rpad(ptje_edad, 10, ' ') || cantidad_cargas || ' ' || ptje_cargas || ' ' || estado_civil || ' ' || ptje_est_civil || ' ' || acred_indigena || ' ' || ptje_indigena || ' ' || 
-             monto_ahorro || ' ' || ptje_monto_ahorro
+             monto_ahorro || ' ' || ptje_monto_ahorro || ' ' || profesion || ' ' || ptje_nivel_ed || ' ' || ptje_total
         );
     end LOOP;
 end;
