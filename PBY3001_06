@@ -5,6 +5,12 @@ declare
     ptje_edad         number(3);
     cantidad_cargas   number(2);
     ptje_cargas       number(3);
+    estado_civil      varchar2(60);
+    ptje_est_civil    number(3);
+    acred_indigena    varchar2(100);
+    ptje_indigena     number(3);
+    monto_ahorro      cuenta_ahorro.monto_ahorrado%type;
+    ptje_monto_ahorro number(3);
 begin
     for i in datos_cursor LOOP
         
@@ -36,10 +42,43 @@ begin
                 ptje_cargas := 0;
         end;
         
+        select
+            descripcion,
+            puntaje_est_civil
+            into estado_civil, ptje_est_civil
+        from ESTADO_CIVIL
+        where id_estado_civil = i.ID_ESTADO_CIVIL;
         
+        select
+            descripcion into acred_indigena
+        from ACREDITACION_INDIGENA
+        where id_acreditacion = i.id_acreditacion;
         
+        if(acred_indigena != 'No posee acreditación') 
+            then ptje_indigena := 500; 
+        else 
+            ptje_indigena := 0; 
+        end if;
         
+        begin
+            select
+             monto_ahorrado into monto_ahorro
+            from CUENTA_AHORRO
+            where run_postulante = i.RUN_POSTULANTE;
+            
+            select
+             puntaje into ptje_monto_ahorro
+            from PUNTAJE_MONTO_AHORRO
+            where monto_ahorro between TRAMO_INF and TRAMO_SUP;
+            
+            EXCEPTION
+            when NO_DATA_FOUND then
+                ptje_monto_ahorro := 0;
+        end;
         
-        DBMS_OUTPUT.PUT_LINE(rpad(i.RUN_POSTULANTE, 10, ' ') || rpad(edad_postulante, 10, ' ') || ptje_edad || ' ' || cantidad_cargas || ' ' || ptje_cargas);
+        DBMS_OUTPUT.PUT_LINE(
+        rpad(i.RUN_POSTULANTE, 10, ' ') || rpad(edad_postulante, 10, ' ') || rpad(ptje_edad, 10, ' ') || cantidad_cargas || ' ' || ptje_cargas || ' ' || estado_civil || ' ' || ptje_est_civil || ' ' || acred_indigena || ' ' || ptje_indigena || ' ' || 
+             monto_ahorro || ' ' || ptje_monto_ahorro
+        );
     end LOOP;
 end;
