@@ -1,0 +1,17 @@
+
+
+select
+    s.id_subsidio,
+    v.id_vivienda,
+    c.nombre_comuna,
+    pv.nombre_provincia,
+    r.nombre_region
+from SUBSIDIO s
+join VIVIENDA v
+on s.id_subsidio = v.id_subsidio
+join COMUNA c
+on v.id_comuna = c.id_comuna
+join PROVINCIA pv
+on c.id_provincia = pv.id_provincia
+join REGION r
+on pv.id_region = r.id_region;
