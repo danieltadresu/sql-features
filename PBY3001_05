@@ -1,31 +1,89 @@
+--PUNTO NRO 3 PARA OBTENER LA SUMA DE LOS PUNTAJES 
 set serveroutput on;
 declare
-    cursor datos is ( select * from POSTULANTE );
-    edad        number(2);
-    ptje_edad   puntaje_postulante.puntaje_edad%type;
-    cant_cargas number(2);
-    ptje_cargas puntaje_carga_familiar.puntaje%type;
-begin
-    for i in datos LOOP
-      select
-       ptj_edad.puntaje,
-       extract(year from sysdate) - extract(year from p.fecha_nacimiento) as edad
-       INTO ptje_edad, edad
-      from postulante p
-       join puntaje_edad ptj_edad
-       on extract(year from sysdate) - extract(year from p.fecha_nacimiento) between ptj_edad.tramo_inf and ptj_edad.tramo_sup
-       where p.run_postulante = i.run_postulante;
-      
-      select
-       count(c.run_carga)
-       INTO cant_cargas
-       from postulante p
-      join carga_familiar c
-       on p.run_postulante = c.run_postulante
-       where p.run_postulante = i.run_postulante
-       group by p.run_postulante;
-       
-
-      DBMS_OUTPUT.PUT_LINE( i.run_postulante  || ' ' || edad || ' ' || ptje_edad || ' ' || cant_cargas || ' ' || ptje_cargas);
+    cursor datos_cursor is ( select * from POSTULANTE );
+    edad_postulante   number(2);
+    ptje_edad         number(3);
+    cantidad_cargas   number(2);
+    ptje_cargas       number(3);
+    estado_civil      varchar2(60);
+    ptje_est_civil    number(3);
+    acred_indigena    varchar2(100);
+    ptje_indigena     number(3);
+    monto_ahorro      cuenta_ahorro.monto_ahorrado%type;
+    ptje_monto        number(3);
+    profesion         varchar2(60);
+    ptje_nivel_ed     number(3);
+    ptje_total        number(10);
+begin 
+    for i in datos_cursor LOOP 
+        
+        select
+            extract(year from sysdate) - extract(year from fecha_nacimiento) into edad_postulante
+        from POSTULANTE
+        where run_postulante = i.RUN_POSTULANTE;
+        
+        select
+            puntaje INTO ptje_edad
+        from PUNTAJE_EDAD
+        where edad_postulante between TRAMO_INF and TRAMO_SUP;
+        
+        select
+           count(run_carga) INTO cantidad_cargas
+        from CARGA_FAMILIAR
+        where run_postulante = i.RUN_POSTULANTE
+        group by run_postulante;
+        
+        select
+           puntaje INTO ptje_cargas
+        from PUNTAJE_CARGA_FAMILIAR
+        where cantidad_cargas >= TRAMO_INF and cantidad_cargas <= TRAMO_SUP;
+        
+        select
+            descripcion,
+            puntaje_est_civil
+            into estado_civil, ptje_est_civil
+        from ESTADO_CIVIL
+        where id_estado_civil = i.ID_ESTADO_CIVIL;
+        
+        select
+            descripcion into acred_indigena
+        from ACREDITACION_INDIGENA
+        where id_acreditacion = i.id_acreditacion;
+        
+        if(acred_indigena != 'No posee acreditación') 
+            then ptje_indigena := 500; 
+        else 
+            ptje_indigena := 0; 
+        end if;
+        
+        select
+            monto_ahorrado into monto_ahorro
+        from CUENTA_AHORRO
+        where run_postulante = i.RUN_POSTULANTE;
+        
+        select
+            puntaje into ptje_monto
+        from PUNTAJE_MONTO_AHORRO
+        where monto_ahorro between TRAMO_INF and TRAMO_SUP; 
+        
+        select
+            p.nombre_profesion,
+            nvl.puntaje 
+            into profesion, ptje_nivel_ed
+        from PROFESION p
+        join NIVEL_EDUCACIONAL nvl
+        on p.id_nivel_ed = nvl.id_nivel_ed
+        where p.id_profesion = i.ID_PROFESION;
+        
+        ptje_total := (ptje_edad + ptje_cargas + ptje_est_civil + ptje_indigena + ptje_monto + ptje_nivel_ed); 
+        
+        DBMS_OUTPUT.PUT_LINE
+        (
+                i.RUN_POSTULANTE || ' ' || edad_postulante || ' ' || ptje_edad || ' ' || cantidad_cargas || ' ' || ptje_cargas || ' ' || 
+                estado_civil || ' ' || ptje_est_civil || ' ' || acred_indigena || ' ' || ptje_indigena || ' ' || monto_ahorro || ' ' || ptje_monto || ' ' ||
+                profesion || ' ' || ptje_nivel_ed || ' ' || ptje_total
+        );
+        
     end LOOP;
 end;
