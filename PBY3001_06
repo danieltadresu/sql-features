@@ -25,12 +25,21 @@ begin
             where run_postulante = i.run_postulante
             group by run_postulante;
             
+            select
+                puntaje into ptje_cargas
+            from PUNTAJE_CARGA_FAMILIAR
+            where cantidad_cargas between TRAMO_INF and TRAMO_SUP;
+            
             EXCEPTION
             when NO_DATA_FOUND then
                 cantidad_cargas := 0;
+                ptje_cargas := 0;
         end;
         
         
-        DBMS_OUTPUT.PUT_LINE(rpad(i.RUN_POSTULANTE, 10, ' ') || rpad(edad_postulante, 10, ' ') || ptje_edad || ' ' || cantidad_cargas);
+        
+        
+        
+        DBMS_OUTPUT.PUT_LINE(rpad(i.RUN_POSTULANTE, 10, ' ') || rpad(edad_postulante, 10, ' ') || ptje_edad || ' ' || cantidad_cargas || ' ' || ptje_cargas);
     end LOOP;
 end;
