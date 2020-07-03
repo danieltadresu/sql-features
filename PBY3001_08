@@ -1,33 +1,18 @@
 CREATE OR REPLACE PACKAGE PKG_DATOS IS
-
-    cantidad_cargas     number(10);    
-    function get_cantidad_cargas(runPostulante number) return number;
-    
     edad_postulante     number(3);
     function get_edad(fechaNacimiento date) return number;
     
     ptje_edad           number(3);
     function get_ptje_edad(fechaNacimiento date) return number;
-
+    
+    cantidad_cargas     number(10);    
+    function get_cantidad_cargas(runPostulante number) return number;
+    
+    ptje_cargas        number(3);
+    function get_ptje_cargas(cantidadCargas number) return number; 
 end PKG_DATOS;
 
---------------------
-
 CREATE OR REPLACE PACKAGE BODY PKG_DATOS IS 
-    
-    function get_cantidad_cargas(runPostulante number) return number IS
-    
-    begin
-    
-        select
-            count(RUN_CARGA) into cantidad_cargas 
-        from CARGA_FAMILIAR
-        where run_postulante = runPostulante
-        group by run_postulante;
-    
-    return cantidad_cargas;
-    end get_cantidad_cargas;
-    
     function get_edad(fechaNacimiento date) return number IS
     begin
         select
@@ -45,9 +30,27 @@ CREATE OR REPLACE PACKAGE BODY PKG_DATOS IS
         where get_edad(fechaNacimiento) between TRAMO_INF and TRAMO_SUP;
         return ptje_edad;
     end get_ptje_edad;
+    
+    function get_cantidad_cargas(runPostulante number) return number IS
+    begin
+        select
+            count(RUN_CARGA) into cantidad_cargas 
+        from CARGA_FAMILIAR
+        where run_postulante = runPostulante
+        group by run_postulante;
+    return cantidad_cargas;
+    end get_cantidad_cargas;
+    
+    function get_ptje_cargas(cantidadCargas number) return number IS
+    begin
+        select
+            puntaje into ptje_cargas
+        from PUNTAJE_CARGA_FAMILIAR
+        where cantidadCargas between TRAMO_INF and TRAMO_SUP;
+        return ptje_cargas;
+    end get_ptje_cargas;  
+    
 end PKG_DATOS;
-
-
 
 select
     run_postulante,
