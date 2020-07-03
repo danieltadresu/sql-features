@@ -3,13 +3,13 @@ CREATE TABLE PUNTAJE_POSTULANTE (
     run_postulante          number(9),
     edad                    number(3),
     puntaje_edad            number(3),
-    cantidad_cargas         number(3)
+    cantidad_cargas         number(3),
+    puntaje_cargas          number(3)
 );
 
 CREATE OR REPLACE PROCEDURE SP_ASIGNACION_PUNTAJE (
     run_postulante    IN puntaje_postulante.run_postulante%type,
-    fecha_nacimiento  IN postulante.fecha_nacimiento%type,
-    cantidad_cargas   IN puntaje_postulante.cantidad_cargas%type
+    fecha_nacimiento  IN postulante.fecha_nacimiento%type
 )
 is begin
     insert into PUNTAJE_POSTULANTE values 
@@ -17,15 +17,11 @@ is begin
         run_postulante,  
         PKG_DATOS.get_edad(fecha_nacimiento), 
         PKG_DATOS.get_ptje_edad(fecha_nacimiento),
-        nvl(PKG_DATOS.get_cantidad_cargas(run_postulante), 0) 
+        nvl(PKG_DATOS.get_cantidad_cargas(run_postulante), 0),
+        nvl(PKG_DATOS.get_ptje_cargas( PKG_DATOS.get_cantidad_cargas(run_postulante) ), 0)
     );
 end SP_ASIGNACION_PUNTAJE;
 
-execute SP_ASIGNACION_PUNTAJE(15980765, TO_DATE('270476'), 15980765);
-execute SP_ASIGNACION_PUNTAJE(17465390, TO_DATE('270482'), 17465390);
-execute SP_ASIGNACION_PUNTAJE(18709562, TO_DATE('270492'), 18709562);
-
-DELETE FROM PUNTAJE_POSTULANTE;
-select * from PUNTAJE_POSTULANTE;
-select * from POSTULANTE;
-DELETE FROM PUNTAJE_POSTULANTE;
+execute SP_ASIGNACION_PUNTAJE(15980765, TO_DATE('270476'));
+execute SP_ASIGNACION_PUNTAJE(17465390, TO_DATE('270482'));
+execute SP_ASIGNACION_PUNTAJE(18709562, TO_DATE('270492'));
