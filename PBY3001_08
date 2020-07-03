@@ -19,6 +19,15 @@ CREATE OR REPLACE PACKAGE BODY PKG_DATOS IS
     
     return cantidad_cargas;
     end get_cantidad_cargas;
+    
+    function get_edad(fechaNacimiento date) return number IS
+    begin
+        select
+            extract(year from sysdate) - extract(year from fechaNacimiento)
+            into edad_postulante
+        from dual;
+    return edad_postulante;
+    end get_edad;
  
 end PKG_DATOS;
 
