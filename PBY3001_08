@@ -13,6 +13,13 @@ CREATE OR REPLACE PACKAGE PKG_DATOS IS
     
     estado_civil       varchar2(60);
     function get_estado_civil(runPostulante number) return varchar2;
+    
+    ptje_estado_civil  number(3);
+    function get_ptje_estado_civ(runPostulante number) return number;
+    
+    acred_indigena  varchar2(60);
+    function get_acred_indigena(runPostulante number) return varchar2;
+    
 end PKG_DATOS;
 
 CREATE OR REPLACE PACKAGE BODY PKG_DATOS IS 
@@ -63,9 +70,28 @@ CREATE OR REPLACE PACKAGE BODY PKG_DATOS IS
         where p.run_postulante = runPostulante;
         return estado_civil;
     end get_estado_civil;
+    
+    
+    function get_ptje_estado_civ(runPostulante number) return number IS 
+    begin
+        select
+            est_civ.puntaje_est_civil into ptje_estado_civil
+        from ESTADO_CIVIL est_civ
+        join POSTULANTE p
+        on est_civ.id_estado_civil = p.id_estado_civil
+        where p.run_postulante = runPostulante;
+        
+        return ptje_estado_civil;
+    end;
+    
+    function get_acred_indigena(runPostulante number) return varchar2 IS 
+    begin
+        select
+            acred.descripcion into acred_indigena
+        from ACREDITACION_INDIGENA acred
+        join POSTULANTE p
+        on acred.id_acreditacion = p.id_acreditacion
+        where p.run_postulante = runPostulante;
+        return acred_indigena;
+    end get_acred_indigena;
 end PKG_DATOS;
-
-select
-    run_postulante,
-    PKG_DATOS.get_cantidad_cargas(run_postulante)
-from POSTULANTE;
