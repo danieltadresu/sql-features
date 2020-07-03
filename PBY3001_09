@@ -5,7 +5,9 @@ CREATE TABLE PUNTAJE_POSTULANTE (
     puntaje_edad            number(3),
     cantidad_cargas         number(3),
     puntaje_cargas          number(3),
-    estado_civil            varchar2(60)
+    estado_civil            varchar2(60),
+    puntaje_estado_civil    number(3),
+    pueblo_ind_orig         varchar2(60)
 );
 
 CREATE OR REPLACE PROCEDURE SP_ASIGNACION_PUNTAJE (
@@ -20,10 +22,13 @@ is begin
         PKG_DATOS.get_ptje_edad(fecha_nacimiento),
         nvl(PKG_DATOS.get_cantidad_cargas(run_postulante), 0),
         nvl(PKG_DATOS.get_ptje_cargas( PKG_DATOS.get_cantidad_cargas(run_postulante) ), 0),
-        PKG_DATOS.get_estado_civil(run_postulante)
+        PKG_DATOS.get_estado_civil(run_postulante),
+        PKG_DATOS.get_ptje_estado_civ(run_postulante),
+        PKG_DATOS.get_acred_indigena(run_postulante)
     );
 end SP_ASIGNACION_PUNTAJE;
 
 execute SP_ASIGNACION_PUNTAJE(15980765, TO_DATE('270476'));
 execute SP_ASIGNACION_PUNTAJE(17465390, TO_DATE('270482'));
 execute SP_ASIGNACION_PUNTAJE(18709562, TO_DATE('270492'));
+
