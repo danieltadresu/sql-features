@@ -10,6 +10,9 @@ CREATE OR REPLACE PACKAGE PKG_DATOS IS
     
     ptje_cargas        number(3);
     function get_ptje_cargas(cantidadCargas number) return number; 
+    
+    estado_civil       varchar2(60);
+    function get_estado_civil(runPostulante number) return varchar2;
 end PKG_DATOS;
 
 CREATE OR REPLACE PACKAGE BODY PKG_DATOS IS 
@@ -50,6 +53,16 @@ CREATE OR REPLACE PACKAGE BODY PKG_DATOS IS
         return ptje_cargas;
     end get_ptje_cargas;  
     
+    function get_estado_civil(runPostulante number) return varchar2 IS 
+    begin
+        select
+            est_civ.descripcion into estado_civil
+        from ESTADO_CIVIL est_civ
+        join POSTULANTE p
+        on est_civ.id_estado_civil = p.id_estado_civil
+        where p.run_postulante = runPostulante;
+        return estado_civil;
+    end get_estado_civil;
 end PKG_DATOS;
 
 select
