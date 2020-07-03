@@ -1,0 +1,29 @@
+CREATE OR REPLACE PACKAGE PKG_DATOS IS
+
+    cantidad_cargas number(10);    
+    function get_cantidad_cargas(runPostulante number) return number;
+
+end PKG_DATOS;
+
+CREATE OR REPLACE PACKAGE BODY PKG_DATOS IS 
+    
+    function get_cantidad_cargas(runPostulante number) return number IS
+    
+    begin
+    
+        select
+            count(RUN_CARGA) into cantidad_cargas 
+        from CARGA_FAMILIAR
+        where run_postulante = runPostulante
+        group by run_postulante;
+    
+    return cantidad_cargas;
+    end get_cantidad_cargas;
+ 
+end PKG_DATOS;
+
+
+select
+    run_postulante,
+    PKG_DATOS.get_cantidad_cargas(run_postulante)
+from POSTULANTE;
