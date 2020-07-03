@@ -1,3 +1,8 @@
+DROP TABLE PUNTAJE_POSTULANTE;
+CREATE TABLE PUNTAJE_POSTULANTE (
+    run_postulante          number(9) 
+);
+
 CREATE OR REPLACE PROCEDURE SP_ASIGNACION_PUNTAJE (
     run_postulante    IN puntaje_postulante.run_postulante%type
 )
