@@ -1,15 +1,19 @@
 DROP TABLE PUNTAJE_POSTULANTE;
 CREATE TABLE PUNTAJE_POSTULANTE (
-    run_postulante          number(9) 
+    run_postulante          number(9),
+    cantidad_cargas         number(3)
 );
 
 CREATE OR REPLACE PROCEDURE SP_ASIGNACION_PUNTAJE (
-    run_postulante    IN puntaje_postulante.run_postulante%type
+    run_postulante    IN puntaje_postulante.run_postulante%type,
+    cantidad_cargas   IN puntaje_postulante.cantidad_cargas%type                
 )
 is begin
-    insert into PUNTAJE_POSTULANTE values ( PKG_DATOS.get_cantidad_cargas(run_postulante) );
+    insert into PUNTAJE_POSTULANTE values ( run_postulante, nvl(PKG_DATOS.get_cantidad_cargas(run_postulante), 0) );
 end SP_ASIGNACION_PUNTAJE;
 
-execute SP_ASIGNACION_PUNTAJE(15980765);
+execute SP_ASIGNACION_PUNTAJE(15980765, 15980765);
+execute SP_ASIGNACION_PUNTAJE(17465390, 17465390);
+execute SP_ASIGNACION_PUNTAJE(18709562, 18709562);
 
 SELECT * FROM PUNTAJE_POSTULANTE;
