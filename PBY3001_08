@@ -28,8 +28,17 @@ CREATE OR REPLACE PACKAGE BODY PKG_DATOS IS
         from dual;
     return edad_postulante;
     end get_edad;
- 
+
+    function get_ptje_edad(fechaNacimiento date) return number IS
+    begin
+        select
+            puntaje into ptje_edad
+        from PUNTAJE_EDAD
+        where get_edad(fechaNacimiento) between TRAMO_INF and TRAMO_SUP;
+        return ptje_edad;
+    end get_ptje_edad;
 end PKG_DATOS;
+
 
 
 select
