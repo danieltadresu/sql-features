@@ -1,0 +1,10 @@
+CREATE OR REPLACE PROCEDURE SP_ASIGNACION_PUNTAJE (
+    run_postulante    IN puntaje_postulante.run_postulante%type
+)
+is begin
+    insert into PUNTAJE_POSTULANTE values ( PKG_DATOS.get_cantidad_cargas(run_postulante) );
+end SP_ASIGNACION_PUNTAJE;
+
+execute SP_ASIGNACION_PUNTAJE(15980765);
+
+SELECT * FROM PUNTAJE_POSTULANTE;
