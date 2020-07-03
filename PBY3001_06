@@ -115,13 +115,13 @@ begin
             ptje_total := (ptje_edad + ptje_cargas + ptje_est_civil + ptje_indigena + ptje_monto_ahorro + ptje_nivel_ed) + 
                           ( (ptje_edad + ptje_cargas + ptje_est_civil + ptje_indigena + ptje_monto_ahorro + ptje_nivel_ed) * ptje_zona_vivienda  / 100); 
         else
+            ptje_zona_vivienda := 0;
             ptje_total := (ptje_edad + ptje_cargas + ptje_est_civil + ptje_indigena + ptje_monto_ahorro + ptje_nivel_ed);
         end if;
         
         DBMS_OUTPUT.PUT_LINE(
         rpad(i.RUN_POSTULANTE, 10, ' ') || rpad(edad_postulante, 10, ' ') || rpad(ptje_edad, 10, ' ') || cantidad_cargas || ' ' || ptje_cargas || ' ' || estado_civil || ' ' || ptje_est_civil || ' ' || acred_indigena || ' ' || ptje_indigena || ' ' || 
-             monto_ahorro || ' ' || ptje_monto_ahorro || ' ' || profesion || ' ' || ptje_nivel_ed || ' ' ||  region_vivienda || ' ' || ptje_total
+             monto_ahorro || ' ' || ptje_monto_ahorro || ' ' || profesion || ' ' || ptje_nivel_ed || ' ' ||  region_vivienda || ' ' || ptje_zona_vivienda  || ' ' || ptje_total
         );
     end LOOP;
 end;
-
