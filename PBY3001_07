@@ -1,0 +1,20 @@
+-- FUNCIÓN QUE RETORNA LA CANTIDAD DE CARGAS FAMILIARES DE 1 POSTULANTE AL SUBSIDIO.
+
+CREATE OR REPLACE FUNCTION function_CargasFamiliares 
+(runPostulante   postulante.run_postulante%type) 
+return number is cantidad_cargas number;
+begin
+    select
+        count(RUN_CARGA) into cantidad_cargas 
+    from CARGA_FAMILIAR
+    where run_postulante = runPostulante
+    group by run_postulante;
+    return cantidad_cargas;
+end;
+
+-- EJECUCIÓN
+
+select
+    run_postulante,
+    function_cargasfamiliares(run_postulante)
+from POSTULANTE;
