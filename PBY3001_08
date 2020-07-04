@@ -2,27 +2,49 @@ CREATE OR REPLACE PACKAGE PKG_DATOS IS
     edad_postulante     number(3);
     function get_edad(fechaNacimiento date) return number;
     
-    ptje_edad           number(3);
+    ptje_edad number(3);
     function get_ptje_edad(fechaNacimiento date) return number;
     
-    cantidad_cargas     number(10);    
+    cantidad_cargas number(10);    
     function get_cantidad_cargas(runPostulante number) return number;
     
-    ptje_cargas        number(3);
+    ptje_cargas number(3);
     function get_ptje_cargas(cantidadCargas number) return number; 
     
-    estado_civil       varchar2(60);
+    estado_civil varchar2(60);
     function get_estado_civil(runPostulante number) return varchar2;
     
-    ptje_estado_civil  number(3);
+    ptje_estado_civil number(3);
     function get_ptje_estado_civ(runPostulante number) return number;
     
-    acred_indigena  varchar2(60);
+    acred_indigena varchar2(60);
     function get_acred_indigena(runPostulante number) return varchar2;
+    
+    ptje_acred_indigena number(3);
+    function get_ptje_acred_indigena( descripcion varchar2 ) return number;
+    
+    monto_ahorro number(10);
+    function get_monto_ahorro(runPostulante number) return number;
+    
+    ptje_monto_ahorro number(3);
+    function get_ptje_monto_ahorro( montoAhorro number ) return number;
+    
+    profesion_postulante varchar(60);
+    function get_profesion( runPostulante number ) return varchar2;
+    
+    ptje_nivel_ed   number(3);
+    function get_ptje_nivel_ed ( runPostulante number ) return number; 
+    
+    id_region_vivienda number(5);
+    ptje_id_region     number(3);
+    function get_ptje_id_region ( runPostulante number ) return number;
+    
     
 end PKG_DATOS;
 
+
 CREATE OR REPLACE PACKAGE BODY PKG_DATOS IS 
+    
     function get_edad(fechaNacimiento date) return number IS
     begin
         select
@@ -71,7 +93,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_DATOS IS
         return estado_civil;
     end get_estado_civil;
     
-    
     function get_ptje_estado_civ(runPostulante number) return number IS 
     begin
         select
@@ -94,4 +115,95 @@ CREATE OR REPLACE PACKAGE BODY PKG_DATOS IS
         where p.run_postulante = runPostulante;
         return acred_indigena;
     end get_acred_indigena;
+    
+    function get_ptje_acred_indigena( descripcion varchar2 ) return number IS
+    begin
+        if(descripcion != 'No posee acreditación') 
+            then ptje_acred_indigena := 500; 
+        else 
+            ptje_acred_indigena := 0; 
+        end if;
+        return ptje_acred_indigena;
+    end get_ptje_acred_indigena;
+    
+    function get_monto_ahorro(runPostulante number) return number is
+    begin
+       select
+        monto_ahorrado INTO monto_ahorro
+       from CUENTA_AHORRO
+       where run_postulante = runPostulante;
+        return monto_ahorro;
+    end get_monto_ahorro;
+    
+    function get_ptje_monto_ahorro( montoAhorro number ) return number is
+    begin
+        select
+         puntaje into ptje_monto_ahorro
+        from PUNTAJE_MONTO_AHORRO
+        where montoAhorro between TRAMO_INF and TRAMO_SUP;
+        return ptje_monto_ahorro;
+    end get_ptje_monto_ahorro;
+    
+    function get_profesion( runPostulante number ) return varchar2 IS 
+    begin
+        select
+            nombre_profesion into profesion_postulante
+        from postulante p
+        join profesion pp
+        on p.id_profesion = pp.id_profesion
+        where p.run_postulante = runPostulante;
+        return profesion_postulante;
+    end get_profesion;
+    
+    function get_ptje_nivel_ed ( runPostulante number ) return number IS
+    begin
+        select
+            puntaje into ptje_nivel_ed
+        from postulante p
+        join profesion pp
+        on p.id_profesion = pp.id_profesion
+        join nivel_educacional nvled
+        on nvled.id_nivel_ed = pp.id_nivel_ed
+        where p.run_postulante = runPostulante;
+        return ptje_nivel_ed;
+    end get_ptje_nivel_ed;
+    
+    
+    function get_ptje_id_region ( runPostulante number ) return number IS 
+    begin
+        select
+            r.id_region
+            INTO id_region_vivienda
+        from POSTULANTE p
+        join SUBSIDIO s
+        on p.id_subsidio = s.id_subsidio
+        join VIVIENDA v
+        on s.id_subsidio = v.id_subsidio
+        join COMUNA c
+        on v.id_comuna = c.id_comuna
+        join PROVINCIA pp
+        on c.id_provincia = pp.id_provincia
+        join REGION r
+        on pp.id_region = r.id_region
+        where p.run_postulante = runPostulante;
+    
+        if(id_region_vivienda = 4) then 
+            ptje_id_region := 100;
+        elsif(id_region_vivienda = 2) then
+            ptje_id_region := 50;
+        elsif(id_region_vivienda = 3) then
+            ptje_id_region := 30; 
+        elsif(id_region_vivienda = 5) then 
+            ptje_id_region := 130;
+        else 
+            ptje_id_region := 0;
+        end if;
+        return ptje_id_region;
+    end get_ptje_id_region;
+
 end PKG_DATOS;
+
+select
+    run_postulante,
+    PKG_DATOS.get_idregion_vivienda(run_postulante)
+from POSTULANTE;
