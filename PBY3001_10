@@ -1,0 +1,9 @@
+select
+    RUN_POSTULANTE,
+    PUNTAJE_TOTAL
+FROM puntaje_postulante
+WHERE PUNTAJE_TOTAL > ( 
+                        select
+                        round(avg(PUNTAJE_TOTAL)) promedio_puntaje
+                        from PUNTAJE_POSTULANTE 
+                      ); 
