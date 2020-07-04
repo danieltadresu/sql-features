@@ -1,3 +1,4 @@
+
 CREATE OR REPLACE PACKAGE PKG_DATOS IS
     edad_postulante     number(3);
     function get_edad(fechaNacimiento date) return number;
@@ -36,9 +37,19 @@ CREATE OR REPLACE PACKAGE PKG_DATOS IS
     function get_ptje_nivel_ed ( runPostulante number ) return number; 
     
     id_region_vivienda number(5);
-    ptje_id_region     number(3);
-    function get_ptje_id_region ( runPostulante number ) return number;
+    function get_id_region ( runPostulante number ) return number;
     
+    puntaje_total number(10);
+    function get_puntaje_total 
+    ( 
+    idx_region_vivienda number,
+    ptje_edad           number,
+    ptje_cargas         number,
+    ptje_est_civil      number,
+    ptje_indigena       number,
+    ptje_monto_ahorro   number,
+    ptje_nivel_ed       number
+    ) return number; 
     
 end PKG_DATOS;
 
@@ -155,6 +166,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_DATOS IS
         return profesion_postulante;
     end get_profesion;
     
+    
+    
     function get_ptje_nivel_ed ( runPostulante number ) return number IS
     begin
         select
@@ -168,8 +181,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_DATOS IS
         return ptje_nivel_ed;
     end get_ptje_nivel_ed;
     
-    
-    function get_ptje_id_region ( runPostulante number ) return number IS 
+        /*
+        @param runPostulante number
+        @return Puntaje por la región de la VIVIENDA a la cual se POSTULA.
+        */
+    function get_id_region ( runPostulante number ) return number IS 
     begin
         select
             r.id_region
@@ -187,6 +203,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_DATOS IS
         on pp.id_region = r.id_region
         where p.run_postulante = runPostulante;
     
+    /*
         if(id_region_vivienda = 4) then 
             ptje_id_region := 100;
         elsif(id_region_vivienda = 2) then
@@ -198,12 +215,43 @@ CREATE OR REPLACE PACKAGE BODY PKG_DATOS IS
         else 
             ptje_id_region := 0;
         end if;
-        return ptje_id_region;
-    end get_ptje_id_region;
-
+        */
+        return id_region_vivienda;
+    end get_id_region;
+    
+    function get_puntaje_total ( 
+    
+    idx_region_vivienda number,
+    ptje_edad           number,
+    ptje_cargas         number,
+    ptje_est_civil      number,
+    ptje_indigena       number,
+    ptje_monto_ahorro   number,
+    ptje_nivel_ed       number
+    
+    ) return number IS
+    begin
+    
+        if(idx_region_vivienda = 4) then 
+            /*puntaje_total := 100;*/
+            puntaje_total :=  (ptje_edad + ptje_cargas + ptje_est_civil + ptje_indigena + ptje_monto_ahorro +  ptje_nivel_ed ) + 
+                              ( (ptje_edad + ptje_cargas + ptje_est_civil + ptje_indigena + ptje_monto_ahorro +  ptje_nivel_ed ) * 100 / 100 );
+        elsif(idx_region_vivienda = 2) then
+            /*puntaje_total := 50;*/
+            puntaje_total :=  (ptje_edad + ptje_cargas + ptje_est_civil + ptje_indigena + ptje_monto_ahorro +  ptje_nivel_ed ) + 
+                              ( (ptje_edad + ptje_cargas + ptje_est_civil + ptje_indigena + ptje_monto_ahorro +  ptje_nivel_ed ) * 50 / 100 );
+        elsif(idx_region_vivienda = 3) then
+            /*puntaje_total := 30;*/
+            puntaje_total :=  (ptje_edad + ptje_cargas + ptje_est_civil + ptje_indigena + ptje_monto_ahorro +  ptje_nivel_ed ) + 
+                              ( (ptje_edad + ptje_cargas + ptje_est_civil + ptje_indigena + ptje_monto_ahorro +  ptje_nivel_ed ) * 30 / 100 );
+        elsif(idx_region_vivienda = 5) then 
+            /*puntaje_total := 130;*/
+            puntaje_total :=  (ptje_edad + ptje_cargas + ptje_est_civil + ptje_indigena + ptje_monto_ahorro +  ptje_nivel_ed ) + 
+                              ( (ptje_edad + ptje_cargas + ptje_est_civil + ptje_indigena + ptje_monto_ahorro +  ptje_nivel_ed ) * 130 / 100 );
+        else 
+            puntaje_total := (ptje_edad + ptje_cargas + ptje_est_civil + ptje_indigena + ptje_monto_ahorro +  ptje_nivel_ed );
+        end if;
+        return puntaje_total;
+    end get_puntaje_total; 
+    
 end PKG_DATOS;
-
-select
-    run_postulante,
-    PKG_DATOS.get_idregion_vivienda(run_postulante)
-from POSTULANTE;
