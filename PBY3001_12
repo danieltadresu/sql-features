@@ -1,0 +1,23 @@
+CREATE OR REPLACE VIEW FOR_TESTING 
+    (run_postulante, nombre)
+AS SELECT 
+    p.run_postulante,
+    pp.puntaje_total
+FROM puntaje_postulante pp
+JOIN POSTULANTE p
+on p.run_postulante = pp.run_postulante;
+
+
+CREATE OR REPLACE TRIGGER TRG_CHECK_PUNTAJE_OBTENIDO 
+    AFTER INSERT OR UPDATE OF PUNTAJE_TOTAL ON PUNTAJE_POSTULANTE
+FOR EACH ROW
+DECLARE
+    ptje_promedio number(5);
+BEGIN
+    ptje_promedio := PKG_DATOS.get_ptje_promedio;
+    if(:new.PUNTAJE_TOTAL > ptje_promedio) then
+        insert into FOR_TESTING values (:new.RUN_POSTULANTE, :new.PUNTAJE_TOTAL);
+        commit;
+    end if;
+END;
+
