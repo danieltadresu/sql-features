@@ -1,0 +1,50 @@
+ /* CLASE CONEXIÓN EN JAVA */
+ 
+package conexion;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+
+public class Conexion {
+    
+    public static Conexion instance; //aplicar el patrón SINGLETON
+    private Connection conexion;
+    
+    private final String USER = "root";
+    private final String PASSWORD = "123";
+    private final String SERVER = "localhost:1521";
+    private final String BBDD = "SUBSIDIO";
+    
+    private Conexion(){
+        try
+        {
+            Class.forName ("oracle.jdbc.driver.OracleDriver");
+            String url = "jdbc:oracle:thin:@" + SERVER + ":" + "XE";
+            conexion = DriverManager.getConnection(url,BBDD,PASSWORD);
+        }
+        catch(ClassNotFoundException | SQLException ex)
+        {
+            JOptionPane.showMessageDialog(null, "Problemas con la conexión a la base de datos\nContacte al administrador", 
+                    "Mensajes", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    public synchronized static Conexion obtenerEstadoConexion(){
+        if(instance == null)
+        {
+            instance = new Conexion();
+        }
+        return instance;
+    }
+    
+    public Connection getConexion(){
+        return conexion;
+    }
+    
+    public void cerrarConexion(){
+        instance = null;
+    }
+    
+}
